@@ -92,11 +92,11 @@ public class CharacterExtractor extends DocumentScannerListenerAdaptor
             g.drawImage(characterImage, x_offset, y_offset, null);
             g.dispose();
 
- /*
+ 
             //Save new image to file
-            File outputfile = new File(outputDir + File.separator + "char_" + num + ".png");
-            ImageIO.write(characterImage, "png", outputfile);
-*/         
+//            File outputfile = new File(File.separator + "home" + File.separator + "diego" + File.separator + "char_" + num + ".png");
+//            outputfile.mkdir();
+//            ImageIO.write(characterImage, "png", outputfile);         
             num++;
             
             return normalizedImage;
