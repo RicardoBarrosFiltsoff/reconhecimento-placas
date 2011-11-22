@@ -44,7 +44,7 @@ public class ReconhecimentoPlaca {
 		kernel);
 	PlanarImage dilatadaAbertura = JAI.create("dilate", erodidaAbertura,
 		kernel);
-	 PlanarImage aberturaTopHat = JAI.create("subtract", imagemOriginal,
+	PlanarImage aberturaTopHat = JAI.create("subtract", imagemOriginal,
 	 dilatadaAbertura);
 
 	// TOP-HAT fechamento
@@ -52,12 +52,12 @@ public class ReconhecimentoPlaca {
 		kernel);
 	PlanarImage erodidaFechamento = JAI.create("erode", dilatadaFechamento,
 		kernel);
-	 PlanarImage fechamentoTopHat = JAI.create("subtract",
+	PlanarImage fechamentoTopHat = JAI.create("subtract",
 	 erodidaFechamento, imagemOriginal);
 
 	File f = new File("imagens/" + placa);
 	BufferedImage imagem = ImageIO.read(f);
-	RandomIter iterator = RandomIterFactory.create(erodidaFechamento, null);
+	RandomIter iterator = RandomIterFactory.create(dilatadaFechamento, null);
 
 	int width = imagem.getWidth();
 	int height = imagem.getHeight();
@@ -112,7 +112,7 @@ public class ReconhecimentoPlaca {
 	images.add(fechamentoTopHat);
 	images.add(binarizada);
 	images.add(binarizadaSemBordas);
-
+	
 	// efetuando a identificação dos caracteres na imagem binarizada
 	CharacterExtractor charExtractor = new CharacterExtractor();
 	List<BufferedImage> slices = charExtractor.slice(
