@@ -11,7 +11,6 @@ import javax.imageio.ImageIO;
 import javax.media.jai.JAI;
 import javax.media.jai.KernelJAI;
 import javax.media.jai.PlanarImage;
-import javax.media.jai.RenderedOp;
 import javax.media.jai.iterator.RandomIter;
 import javax.media.jai.iterator.RandomIterFactory;
 import javax.swing.JFrame;
@@ -29,11 +28,14 @@ public class ReconhecimentoPlaca {
 	String placa = "placa1.jpg";
 
 	PlanarImage imagemOriginal = JAI.create("fileload", "imagens/" + placa);
-	float[] kernelMatrix = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-		0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-		0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+	float[] kernelMatrix = { 
+		1/25, 1/25, 1/25, 1/25, 1/25, 
+		1/25, 1/25, 1/25, 1/25, 1/25,
+		1/25, 1/25, 1/25, 1/25, 1/25,
+		1/25, 1/25, 1/25, 1/25, 1/25,
+		1/25, 1/25, 1/25, 1/25, 1/25};
 
-	KernelJAI kernel = new KernelJAI(7, 7, kernelMatrix);
+	KernelJAI kernel = new KernelJAI(5, 5, kernelMatrix);
 
 	List<RenderedImage> images = new ArrayList<RenderedImage>();
 
@@ -42,16 +44,16 @@ public class ReconhecimentoPlaca {
 		kernel);
 	PlanarImage dilatadaAbertura = JAI.create("dilate", erodidaAbertura,
 		kernel);
-	// PlanarImage aberturaTopHat = JAI.create("subtract", imagemOriginal,
-	// dilatadaAbertura);
+	 PlanarImage aberturaTopHat = JAI.create("subtract", imagemOriginal,
+	 dilatadaAbertura);
 
 	// TOP-HAT fechamento
 	PlanarImage dilatadaFechamento = JAI.create("dilate", imagemOriginal,
 		kernel);
 	PlanarImage erodidaFechamento = JAI.create("erode", dilatadaFechamento,
 		kernel);
-	// PlanarImage fechamentoTopHat = JAI.create("subtract",
-	// erodidaFechamento, imagemOriginal);
+	 PlanarImage fechamentoTopHat = JAI.create("subtract",
+	 erodidaFechamento, imagemOriginal);
 
 	File f = new File("imagens/" + placa);
 	BufferedImage imagem = ImageIO.read(f);
@@ -92,10 +94,10 @@ public class ReconhecimentoPlaca {
 	// borda.
 	ParameterBlock cropPB = new ParameterBlock();
 	cropPB.addSource(binarizada);
-	cropPB.add(10.0f); // x inicial
-	cropPB.add(10.0f); // y inicial
-	cropPB.add(binarizada.getWidth() - 20f); // expansão em x
-	cropPB.add(binarizada.getHeight() - 20f); // expansão em y
+	cropPB.add(5.0f); // x inicial
+	cropPB.add(5.0f); // y inicial
+	cropPB.add(binarizada.getWidth() - 10f); // expansão em x
+	cropPB.add(binarizada.getHeight() - 10f); // expansão em y
 	PlanarImage binarizadaSemBordas = JAI.create("crop", cropPB);
 	// TODO: encontrar umas forma melhor de fazer essa bagaça
 	// MASTER GAMBI MODE OFF
@@ -104,15 +106,17 @@ public class ReconhecimentoPlaca {
 	images.add(imagemOriginal);
 	images.add(erodidaAbertura);
 	images.add(dilatadaAbertura);
+	images.add(aberturaTopHat);
 	images.add(dilatadaFechamento);
 	images.add(erodidaFechamento);
+	images.add(fechamentoTopHat);
 	images.add(binarizada);
 	images.add(binarizadaSemBordas);
 
 	// efetuando a identificação dos caracteres na imagem binarizada
 	CharacterExtractor charExtractor = new CharacterExtractor();
 	List<BufferedImage> slices = charExtractor.slice(
-		binarizadaSemBordas.getAsBufferedImage(), 30, 30);
+		binarizadaSemBordas.getAsBufferedImage(), 20, 30);
 
 	// gravando a saída
 	for (int i = 0; i < slices.size(); i++) {
