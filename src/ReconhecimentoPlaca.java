@@ -125,6 +125,14 @@ public class ReconhecimentoPlaca {
 	    outputfile.mkdir();
 	    ImageIO.write(slices.get(i), "png", outputfile);
 	}
+	
+	
+	for (int i = 0; i < 7; i++) {
+		PlanarImage letra = JAI.create("fileload", "output/"+ "char_" + i + ".png");
+		images.add(letra);
+		images.add(erodeLetra(letra));
+		geraMatriz("char_" + i + ".png");
+	}
 
 	frame.add(new DisplayTwoSynchronizedImages(images));
 	frame.pack();
@@ -132,5 +140,52 @@ public class ReconhecimentoPlaca {
 	frame.setVisible(true);
 
     }
+
+	private static void geraMatriz(String img) {
+		PlanarImage letra = JAI.create("fileload", "output/" + img);
+		
+		int width = letra.getWidth();
+		int height = letra.getHeight();
+		RandomIter iterator = RandomIterFactory.create(letra, null);
+		int[][] letraMatriz = new int[width][height];
+		int[] pixel = new int[3];
+		for (int h = 0; h < height; h++) {
+			for (int w = 0; w < width; w++) {
+				iterator.getPixel(w, h, pixel);
+//				System.out.println("R: " + pixel[0] + " G: " + pixel[1] + " B: " + pixel[2]);
+				if (pixel[0] >= 200 && pixel[1] >= 200 && pixel[2] >= 200) {
+					letraMatriz[w][h] = 0;
+				} else {
+					letraMatriz[w][h] = 1;
+				}
+			}
+		}
+		imprimeLetraMatriz(letraMatriz);
+	}
+
+	private static PlanarImage erodeLetra(PlanarImage letra) {
+		float[] kernelMatrix = { 
+								1/9,1/9,
+								1/9,1/9,
+								1/9,1/9,
+								1/9,1/9,1/9
+								};
+
+		KernelJAI kernel = new KernelJAI(3, 3, kernelMatrix);
+		PlanarImage retorno = JAI.create("erode", letra,
+				kernel);
+		return retorno;
+	}
+
+	private static void imprimeLetraMatriz(int[][] letraMatriz) {
+		int width = letraMatriz.length;
+		int height = letraMatriz[0].length;
+		for (int h = 0; h < height; h++) {
+			for (int w = 0; w < width; w++) {
+				System.out.print(letraMatriz[w][h]);
+			}
+			System.out.println();
+		}
+	}
 
 }
