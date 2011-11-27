@@ -25,7 +25,7 @@ public class ReconhecimentoPlaca {
 	System.setProperty("com.sun.media.jai.disableMediaLib", "true");
 	System.setProperty("com.sun.media.imageio.disableCodecLib", "true");
 
-	String placa = "placa1.jpg";
+	String placa = "placa4.jpg";
 
 	PlanarImage imagemOriginal = JAI.create("fileload", "imagens/" + placa);
 	float[] kernelMatrix = { 
@@ -97,7 +97,7 @@ public class ReconhecimentoPlaca {
 	cropPB.add(5.0f); // x inicial
 	cropPB.add(5.0f); // y inicial
 	cropPB.add(binarizada.getWidth() - 10f); // expansão em x
-	cropPB.add(binarizada.getHeight() - 10f); // expansão em y
+	cropPB.add(binarizada.getHeight() - 30f); // expansão em y
 	PlanarImage binarizadaSemBordas = JAI.create("crop", cropPB);
 	// TODO: encontrar umas forma melhor de fazer essa bagaça
 	// MASTER GAMBI MODE OFF
