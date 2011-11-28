@@ -25,7 +25,7 @@ public class ReconhecimentoPlaca {
 	System.setProperty("com.sun.media.jai.disableMediaLib", "true");
 	System.setProperty("com.sun.media.imageio.disableCodecLib", "true");
 
-	String placa = "placa4.jpg";
+	String placa = "placa6.jpg";
 
 	PlanarImage imagemOriginal = JAI.create("fileload", "imagens/" + placa);
 	float[] kernelMatrix = { 
@@ -116,7 +116,7 @@ public class ReconhecimentoPlaca {
 	// efetuando a identificação dos caracteres na imagem binarizada
 	CharacterExtractor charExtractor = new CharacterExtractor();
 	List<BufferedImage> slices = charExtractor.slice(
-		binarizadaSemBordas.getAsBufferedImage(), 20, 30);
+		binarizadaSemBordas.getAsBufferedImage(), 15, 15);
 
 	// gravando a saída
 	for (int i = 0; i < slices.size(); i++) {
@@ -127,12 +127,32 @@ public class ReconhecimentoPlaca {
 	}
 	
 	
-	for (int i = 0; i < 7; i++) {
-		PlanarImage letra = JAI.create("fileload", "output/"+ "char_" + i + ".png");
-		images.add(letra);
-		images.add(erodeLetra(letra));
-		geraMatriz("char_" + i + ".png");
+	// conta caracteres gerados
+	File file = new File(OUTPUT_FOLDER); 
+	File files[] = file.listFiles();
+	int qtdLetras = 0;
+	for (File fi: files)
+		if (fi.getName().startsWith("char_")) 
+			qtdLetras++;
+		
+	for (int i = 0; i < qtdLetras; i++) {
+		// se nao gerou o traco
+		if (qtdLetras == 7) {
+			PlanarImage letra = JAI.create("fileload", "output/"+ "char_" + i + ".png");
+			images.add(letra);
+			geraMatriz("char_" + i + ".png");	
+		} else {
+			// se gerou o traco, disconsiderar
+			if (i != 3) {
+				PlanarImage letra = JAI.create("fileload", "output/"+ "char_" + i + ".png");
+				images.add(letra);
+				geraMatriz("char_" + i + ".png");
+			}
+		}
+		System.out.println("\n\n\n");
 	}
+	
+//	teste();
 
 	frame.add(new DisplayTwoSynchronizedImages(images));
 	frame.pack();
@@ -141,19 +161,58 @@ public class ReconhecimentoPlaca {
 
     }
 
-	private static void geraMatriz(String img) {
-		PlanarImage letra = JAI.create("fileload", "output/" + img);
-		
+    
+    private static void teste() {
+    	// conta caracteres gerados
+    	File file = new File("C:/Users/Rausch/workspace/ReconhecimentoPlacas/redeneural/treino"); 
+    	File files[] = file.listFiles();
+    	for (File fi: files) { 
+    		PlanarImage letra = JAI.create("fileload", "C:/Users/Rausch/workspace/ReconhecimentoPlacas/redeneural/treino/"+ fi.getName());
+			geraMatriz2(letra);	
+			System.out.println("\n\n\n");
+    	}
+    		
+    	
+    }
+    
+    
+    private static void geraMatriz2(PlanarImage letra) {
+//		PlanarImage letra = JAI.create("fileload", "output/" + img);
+//		letra = erodeLetra(letra);
+		int bloqueioBranco = 127;
 		int width = letra.getWidth();
 		int height = letra.getHeight();
 		RandomIter iterator = RandomIterFactory.create(letra, null);
 		int[][] letraMatriz = new int[width][height];
 		int[] pixel = new int[3];
-		for (int h = 0; h < height; h++) {
-			for (int w = 0; w < width; w++) {
+		for (int h = 1; h < height-1; h++) {
+			for (int w = 1; w < width-1; w++) {
 				iterator.getPixel(w, h, pixel);
 //				System.out.println("R: " + pixel[0] + " G: " + pixel[1] + " B: " + pixel[2]);
-				if (pixel[0] >= 200 && pixel[1] >= 200 && pixel[2] >= 200) {
+				if (pixel[0] >= bloqueioBranco && pixel[1] >= bloqueioBranco && pixel[2] >= bloqueioBranco) {
+					letraMatriz[w][h] = 0;
+				} else {
+					letraMatriz[w][h] = 1;
+				}
+			}
+		}
+		imprimeLetraMatriz(letraMatriz);
+	}
+    
+	private static void geraMatriz(String img) {
+		PlanarImage letra = JAI.create("fileload", "output/" + img);
+//		letra = erodeLetra(letra);
+		int bloqueioBranco = 250;
+		int width = letra.getWidth();
+		int height = letra.getHeight();
+		RandomIter iterator = RandomIterFactory.create(letra, null);
+		int[][] letraMatriz = new int[width][height];
+		int[] pixel = new int[3];
+		for (int h = 1; h < height-1; h++) {
+			for (int w = 1; w < width-1; w++) {
+				iterator.getPixel(w, h, pixel);
+//				System.out.println("R: " + pixel[0] + " G: " + pixel[1] + " B: " + pixel[2]);
+				if (pixel[0] >= bloqueioBranco && pixel[1] >= bloqueioBranco && pixel[2] >= bloqueioBranco) {
 					letraMatriz[w][h] = 0;
 				} else {
 					letraMatriz[w][h] = 1;
@@ -164,16 +223,28 @@ public class ReconhecimentoPlaca {
 	}
 
 	private static PlanarImage erodeLetra(PlanarImage letra) {
-		float[] kernelMatrix = { 
-								1/9,1/9,
-								1/9,1/9,
-								1/9,1/9,
-								1/9,1/9,1/9
+		float[] kernelMatrix3x3 = { 
+								0,0,0,
+								0,1/9,0,
+								0,0,0
 								};
+		
+		float[] kernelMatrix5x5 = { 
+				0,0,0,0,0,
+				0,0,0,0,0,
+				0,0,1/25,0,0,
+				0,0,0,0,0,
+				0,0,0,0,0
+				};
 
-		KernelJAI kernel = new KernelJAI(3, 3, kernelMatrix);
+		KernelJAI kernel = new KernelJAI(3, 3, kernelMatrix3x3);
+//		KernelJAI kernel = new KernelJAI(5, 5, kernelMatrix5x5);
 		PlanarImage retorno = JAI.create("erode", letra,
 				kernel);
+		
+//		kernel = new KernelJAI(3, 3, kernelMatrix);
+//		retorno = JAI.create("dilate", letra,
+//				kernel);
 		return retorno;
 	}
 
