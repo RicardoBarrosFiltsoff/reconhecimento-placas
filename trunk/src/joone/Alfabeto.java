@@ -1,7 +1,7 @@
 package joone;
+
 import java.io.File;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 
@@ -243,9 +243,11 @@ public class Alfabeto {
 
 		for (File fi : files) {
 			// retira a extensao
-			nomeArquivo = fi.getName().substring(0, fi.getName().length() - 4);
-			PlanarImage letra = JAI.create("fileload", TRAINING_FOLDER + fi.getName());
-			adicionarTreino(letra, nomeArquivo);
+			nomeArquivo = fi.getName().split("\\.")[0];
+			if (!nomeArquivo.equals("")) {
+				PlanarImage letra = JAI.create("fileload", TRAINING_FOLDER + fi.getName());
+				adicionarTreino(letra, nomeArquivo);
+			}
 		}
 	}
 
@@ -260,7 +262,7 @@ public class Alfabeto {
 	 * @param nomeLetra
 	 */
 	private void adicionarTreino(PlanarImage letra, String nomeLetra) {
-		int bloqueioBranco = 127;
+		int bloqueioBranco = 10;
 		int width = letra.getWidth();
 		int height = letra.getHeight();
 		RandomIter iterator = RandomIterFactory.create(letra, null);
@@ -324,6 +326,7 @@ public class Alfabeto {
 	}
 
 	public String getLetraTeste(String letra) {
+		System.out.println("PASSAR COM PARAMETRO PARA REDE NEURAL (INTERROGATE): \n" + this.treino.get(letra));
 		return this.treino.get(letra);
 	}
 
@@ -337,4 +340,7 @@ public class Alfabeto {
 		return letras.substring(0, letras.length() - 1);// letras.toString();
 	}
 
+	public static void main(String[] args) {
+		new Alfabeto().getLetraTeste("a");
+	}
 }
