@@ -74,10 +74,10 @@ public class RedeNeural implements Serializable {
 		System.out.println("O caractere lido é: " + this.alfabeto.getLetraIndex(joo.caractereIndex()).toUpperCase());
 	}
 
-//	public static void main(String[] args) {
-//		RedeNeural rn = new RedeNeural();
-//		rn.gerarArquivoTreino();
-//		rn.treinar();
-//		rn.testar(new Alfabeto().getLetraTeste("y"));
-//	}
+	public static void main(String[] args) {
+		RedeNeural rn = new RedeNeural();
+		rn.gerarArquivoTreino();
+		rn.treinar();
+		rn.testar(new Alfabeto().getLetraTeste("u"));
+	}
 }
