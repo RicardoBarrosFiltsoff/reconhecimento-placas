@@ -1,6 +1,5 @@
 package joone;
 
-
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -188,7 +187,7 @@ public class JooneOCR implements NeuralNetListener, Serializable {
 		System.out.println("Network stopped due the following error: " + error);
 	}
 
-	public int caractereIndex() {
+	public int caractereIndex(TipoCaractere tipo) {
 		try {
 			BufferedReader reader = new BufferedReader(new FileReader(resultFile));
 			String result = reader.readLine();
@@ -198,14 +197,28 @@ public class JooneOCR implements NeuralNetListener, Serializable {
 			String[] weights = result.split(";");
 			double maxNumber = -1;
 			int number = -1;
-			for (int i = 0; i < weights.length; i++) {
-				double d = Double.parseDouble(weights[i]);
-				if (d > maxNumber) {
-					maxNumber = d;
-					number = i;
+
+			if (tipo == TipoCaractere.NUMERO) {
+				for (int i = 1; i < weights.length - 26; i++) {
+					double d = Double.parseDouble(weights[i]);
+					if (d > maxNumber) {
+						maxNumber = d;
+						number = i;
+					}
 				}
+				return number;
+			} else if (tipo == TipoCaractere.LETRA) {
+				for (int i = 11; i < weights.length; i++) {
+					double d = Double.parseDouble(weights[i]);
+					if (d > maxNumber) {
+						maxNumber = d;
+						number = i;
+					}
+				}
+				return number;
+			} else {
+				return 0;
 			}
-			return number;
 		} catch (FileNotFoundException e) {
 			System.out.println("Arquivo não encontrado: " + e.getMessage());
 		} catch (IOException e) {

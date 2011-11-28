@@ -60,7 +60,7 @@ public class RedeNeural implements Serializable {
 		return trainingPatterns;
 	}
 
-	public void testar(String charMatriz) {
+	public String testar(String charMatriz, TipoCaractere tipo) {
 		try {
 			PrintStream printer = new PrintStream(new FileOutputStream(interrogateFile));
 			printer.println(charMatriz);
@@ -71,13 +71,14 @@ public class RedeNeural implements Serializable {
 		JooneOCR joo = JooneOCR.restoreNeuralNet(ocrSerializable);
 		joo.interrogate(inputSelector);
 
-		System.out.println("O caractere lido é: " + this.alfabeto.getLetraIndex(joo.caractereIndex()).toUpperCase());
+		System.out.println("O caractere lido é: " + this.alfabeto.getLetraIndex(joo.caractereIndex(tipo)).toUpperCase());
+		return this.alfabeto.getLetraIndex(joo.caractereIndex(tipo)).toUpperCase();
 	}
 
 	public static void main(String[] args) {
 		RedeNeural rn = new RedeNeural();
 		rn.gerarArquivoTreino();
 		rn.treinar();
-		rn.testar(new Alfabeto().getLetraTeste("u"));
+		rn.testar(new Alfabeto().getLetraTeste("u"), TipoCaractere.LETRA);
 	}
 }
