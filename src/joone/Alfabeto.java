@@ -22,7 +22,7 @@ public class Alfabeto {
 	private int qtdCaracteres = 37;
 
 	// pasta onde estarao as imagens para treino
-	private static final String TRAINING_FOLDER = "C:/Users/Rausch/workspace/ReconhecimentoPlacas/redeneural/treino/";
+	private static final String TRAINING_FOLDER = "redeneural" + File.separator + "treino" + File.separator;
 
 	/**
 	 * <b>Inicia a classe Alfabeto com os resultados esperados para as
@@ -209,7 +209,7 @@ public class Alfabeto {
 	}
 
 	/**
-	 * <b>Retorna o valor binário da classe correspondente ao caractere
+	 * <b>Retorna o valor binï¿½rio da classe correspondente ao caractere
 	 * informado</b>
 	 * 
 	 * <pre>
