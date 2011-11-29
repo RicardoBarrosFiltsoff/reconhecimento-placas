@@ -1,3 +1,5 @@
+import java.awt.Frame;
+import java.awt.GridLayout;
 import java.awt.image.BufferedImage;
 import java.awt.image.RenderedImage;
 import java.awt.image.WritableRaster;
@@ -14,6 +16,7 @@ import javax.media.jai.PlanarImage;
 import javax.media.jai.iterator.RandomIter;
 import javax.media.jai.iterator.RandomIterFactory;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 
 import joone.RedeNeural;
 import joone.TipoCaractere;
@@ -38,14 +41,14 @@ public class ReconhecimentoPlaca {
 		List<RenderedImage> images = new ArrayList<RenderedImage>();
 
 		// TOP-HAT abertura
-		PlanarImage erodidaAbertura = JAI.create("erode", imagemOriginal, kernel);
-		PlanarImage dilatadaAbertura = JAI.create("dilate", erodidaAbertura, kernel);
-		PlanarImage aberturaTopHat = JAI.create("subtract", imagemOriginal, dilatadaAbertura);
+//		PlanarImage erodidaAbertura = JAI.create("erode", imagemOriginal, kernel);
+//		PlanarImage dilatadaAbertura = JAI.create("dilate", erodidaAbertura, kernel);
+//		PlanarImage aberturaTopHat = JAI.create("subtract", imagemOriginal, dilatadaAbertura);
 
 		// TOP-HAT fechamento
 		PlanarImage dilatadaFechamento = JAI.create("dilate", imagemOriginal, kernel);
-		PlanarImage erodidaFechamento = JAI.create("erode", dilatadaFechamento, kernel);
-		PlanarImage fechamentoTopHat = JAI.create("subtract", erodidaFechamento, imagemOriginal);
+//		PlanarImage erodidaFechamento = JAI.create("erode", dilatadaFechamento, kernel);
+//		PlanarImage fechamentoTopHat = JAI.create("subtract", erodidaFechamento, imagemOriginal);
 
 		File f = new File("imagens/" + placa);
 		BufferedImage imagem = ImageIO.read(f);
@@ -78,6 +81,9 @@ public class ReconhecimentoPlaca {
 		PlanarImage binarizada = JAI.create("binarize", pb);
 
 		JFrame frame = new JFrame("Teste");
+		GridLayout gl = new GridLayout(2, 1);
+		
+		frame.setLayout(gl);
 
 		// MASTER GAMBI MODE ON
 		// o algoritmo ocr se perde se a imagem tem bordas.
@@ -95,12 +101,12 @@ public class ReconhecimentoPlaca {
 
 		// adicionando todas as imagens na lista pra ver as diferenças
 		images.add(imagemOriginal);
-		images.add(erodidaAbertura);
-		images.add(dilatadaAbertura);
-		images.add(aberturaTopHat);
+//		images.add(erodidaAbertura);
+//		images.add(dilatadaAbertura);
+//		images.add(aberturaTopHat);
 		images.add(dilatadaFechamento);
-		images.add(erodidaFechamento);
-		images.add(fechamentoTopHat);
+//		images.add(erodidaFechamento);
+//		images.add(fechamentoTopHat);
 		images.add(binarizada);
 		images.add(binarizadaSemBordas);
 
@@ -121,16 +127,15 @@ public class ReconhecimentoPlaca {
 			ImageIO.write(slices.get(i), "png", outputfile);
 		}
 
-		escrevePlaca();
-
 		frame.add(new DisplayTwoSynchronizedImages(images));
+		escrevePlaca(frame);
 		frame.pack();
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setVisible(true);
 
 	}
 
-	private static void escrevePlaca() {
+	private static void escrevePlaca(Frame frame) {
 		String placa = "";
 		RedeNeural rn = new RedeNeural();
 		// conta caracteres gerados
@@ -167,6 +172,13 @@ public class ReconhecimentoPlaca {
 			System.out.println("\n\n\n");
 		}
 		System.out.println("A placa lida foi: " + placa);
+		boolean acessoLiberado = false;
+		
+		if(placa.equals("EIP-1665")) {
+		    acessoLiberado = true;
+		}
+		
+		frame.add(new JLabel("A placa lida foi: " + placa + " [" + String.valueOf(acessoLiberado) + "]"));
 	}
 
 	private static int[][] geraMatriz(String img) {
