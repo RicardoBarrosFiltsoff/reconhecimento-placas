@@ -170,7 +170,7 @@ public class ReconhecimentoPlaca {
 	}
 
 	private static int[][] geraMatriz(String img) {
-		PlanarImage letra = JAI.create("fileload", "output/" + img);
+		PlanarImage letra = JAI.create("fileload", "output" + File.separator + img);
 		// letra = erodeLetra(letra);
 		int bloqueioBranco = 250;
 		int width = letra.getWidth();
