@@ -12,11 +12,11 @@ import java.io.Serializable;
 public class RedeNeural implements Serializable {
 
 	private static final long serialVersionUID = 5732962760602163835L;
-	private String trainingFile = "C:/Users/Rausch/workspace/ReconhecimentoPlacas/redeneural/txt/training.txt";
-	private String errorFile = "C:/Users/Rausch/workspace/ReconhecimentoPlacas/redeneural/txt/error.txt";
-	private String interrogateFile = "C:/Users/Rausch/workspace/ReconhecimentoPlacas/redeneural/txt/interrogate.txt";
-	private String resultFile = "C:/Users/Rausch/workspace/ReconhecimentoPlacas/redeneural/txt/result.txt";
-	private String ocrSerializable = "C:/Users/Rausch/workspace/ReconhecimentoPlacas/redeneural/txt/ocr.ser";
+	private String trainingFile = "redeneural" + File.separator + "txt" + File.separator + "training.txt";
+	private String errorFile = "redeneural" + File.separator + "txt" + File.separator + "error.txt";
+	private String interrogateFile = "redeneural" + File.separator + "txt" + File.separator + "interrogate.txt";
+	private String resultFile = "redeneural" + File.separator + "txt" + File.separator + "result.txt";
+	private String ocrSerializable = "redeneural" + File.separator + "txt" + File.separator + "ocr.ser";
 	private JooneOCR ocr;
 	private String inputSelector = "1-225";
 	private String desiredSelector = "226-262";
@@ -35,7 +35,7 @@ public class RedeNeural implements Serializable {
 			// br.newLine();
 			br.close();
 		} catch (IOException e) {
-			System.out.println("Exceção no método gravarNumero(): " + e.getMessage());
+			System.out.println("Exceï¿½ï¿½o no mï¿½todo gravarNumero(): " + e.getMessage());
 		}
 	}
 
@@ -55,7 +55,7 @@ public class RedeNeural implements Serializable {
 				trainingPatterns++;
 			}
 		} catch (IOException e) {
-			System.out.println("Exceção no método trainingPatterns(): " + e.getMessage());
+			System.out.println("Exceï¿½ï¿½o no mï¿½todo trainingPatterns(): " + e.getMessage());
 		}
 		return trainingPatterns;
 	}
@@ -66,12 +66,12 @@ public class RedeNeural implements Serializable {
 			printer.println(charMatriz);
 			printer.close();
 		} catch (IOException e) {
-			System.out.println("Exceção no método testar: " + e.getMessage());
+			System.out.println("Exceï¿½ï¿½o no mï¿½todo testar: " + e.getMessage());
 		}
 		JooneOCR joo = JooneOCR.restoreNeuralNet(ocrSerializable);
 		joo.interrogate(inputSelector);
 
-		System.out.println("O caractere lido é: " + this.alfabeto.getLetraIndex(joo.caractereIndex(tipo)).toUpperCase());
+		System.out.println("O caractere lido ï¿½: " + this.alfabeto.getLetraIndex(joo.caractereIndex(tipo)).toUpperCase());
 		return this.alfabeto.getLetraIndex(joo.caractereIndex(tipo)).toUpperCase();
 	}
 
