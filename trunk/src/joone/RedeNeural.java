@@ -18,11 +18,11 @@ public class RedeNeural implements Serializable {
 	private String resultFile = "redeneural" + File.separator + "txt" + File.separator + "result.txt";
 	private String ocrSerializable = "redeneural" + File.separator + "txt" + File.separator + "ocr.ser";
 	private JooneOCR ocr;
-	private String inputSelector = "1-225";
-	private String desiredSelector = "226-262";
-	private int ciclesTraining = 500;
-	private int inNeurons = 225;
-	private int hiddenNeurons = 75;
+	private String inputSelector = "1-320";
+	private String desiredSelector = "321-357";
+	private int ciclesTraining = 1000;
+	private int inNeurons = 320;
+	private int hiddenNeurons = 130;
 	private int outNeurons = 37;
 	private Alfabeto alfabeto = new Alfabeto();
 
@@ -79,6 +79,6 @@ public class RedeNeural implements Serializable {
 		RedeNeural rn = new RedeNeural();
 		rn.gerarArquivoTreino();
 		rn.treinar();
-		rn.testar(new Alfabeto().getLetraTeste("u"), TipoCaractere.LETRA);
+//		rn.testar(new Alfabeto().getLetraTeste("u"), TipoCaractere.LETRA);
 	}
 }
