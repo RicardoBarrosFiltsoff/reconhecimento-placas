@@ -21,7 +21,7 @@ public class GeradorImagemTreino {
 	final String jpg = ".jpg";
 
 	File diretorioImagensTreino = new File("redeneural" + File.separator
-		+ "treino");
+		+ "treino2");
 	for (File imagem : diretorioImagensTreino.listFiles()) {
 	    if (imagem.getName().endsWith(".jpg")) {
 

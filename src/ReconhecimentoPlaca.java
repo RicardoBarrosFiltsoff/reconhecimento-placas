@@ -30,7 +30,7 @@ public class ReconhecimentoPlaca {
 		System.setProperty("com.sun.media.jai.disableMediaLib", "true");
 		System.setProperty("com.sun.media.imageio.disableCodecLib", "true");
 
-		String placa = "placa5.jpg";
+		String placa = "placa4.jpg";
 
 		PlanarImage imagemOriginal = JAI.create("fileload", "imagens/" + placa);
 		float[] kernelMatrix = { 1 / 25, 1 / 25, 1 / 25, 1 / 25, 1 / 25, 1 / 25, 1 / 25, 1 / 25, 1 / 25, 1 / 25, 1 / 25, 1 / 25, 1 / 25, 1 / 25, 1 / 25, 1 / 25, 1 / 25, 1 / 25,
@@ -172,13 +172,13 @@ public class ReconhecimentoPlaca {
 			System.out.println("\n\n\n");
 		}
 		System.out.println("A placa lida foi: " + placa);
-		boolean acessoLiberado = false;
+//		boolean acessoLiberado = false;
+//		
+//		if(placa.equals("EIP-1665")) {
+//		    acessoLiberado = true;
+//		}
 		
-		if(placa.equals("EIP-1665")) {
-		    acessoLiberado = true;
-		}
-		
-		frame.add(new JLabel("A placa lida foi: " + placa + " [" + String.valueOf(acessoLiberado) + "]"));
+		frame.add(new JLabel("A placa lida foi: " + placa));
 	}
 
 	private static int[][] geraMatriz(String img) {
