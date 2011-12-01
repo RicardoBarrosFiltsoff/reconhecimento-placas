@@ -30,7 +30,7 @@ public class ReconhecimentoPlaca {
 		System.setProperty("com.sun.media.jai.disableMediaLib", "true");
 		System.setProperty("com.sun.media.imageio.disableCodecLib", "true");
 
-		String placa = "placa6.jpg";
+		String placa = "placa5.jpg";
 
 		PlanarImage imagemOriginal = JAI.create("fileload", "imagens/" + placa);
 		float[] kernelMatrix = { 1 / 25, 1 / 25, 1 / 25, 1 / 25, 1 / 25, 1 / 25, 1 / 25, 1 / 25, 1 / 25, 1 / 25, 1 / 25, 1 / 25, 1 / 25, 1 / 25, 1 / 25, 1 / 25, 1 / 25, 1 / 25,

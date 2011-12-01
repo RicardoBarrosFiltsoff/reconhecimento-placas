@@ -245,8 +245,11 @@ public class Alfabeto {
 			// retira a extensao
 			nomeArquivo = fi.getName().split("\\.")[0];
 			if (!nomeArquivo.equals("")) {
-				PlanarImage letra = JAI.create("fileload", TRAINING_FOLDER + fi.getName());
-				adicionarTreino(letra, nomeArquivo);
+			    if(nomeArquivo.contains("_")) {
+				nomeArquivo = nomeArquivo.substring(0, nomeArquivo.indexOf("_"));
+			    }
+			    PlanarImage letra = JAI.create("fileload", TRAINING_FOLDER + fi.getName());
+			    adicionarTreino(letra, nomeArquivo);
 			}
 		}
 	}
