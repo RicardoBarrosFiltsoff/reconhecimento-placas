@@ -112,7 +112,7 @@ public class ReconhecimentoPlaca {
 
 		// efetuando a identificação dos caracteres na imagem binarizada
 		CharacterExtractor charExtractor = new CharacterExtractor();
-		List<BufferedImage> slices = charExtractor.slice(binarizadaSemBordas.getAsBufferedImage(), 15, 15);
+		List<BufferedImage> slices = charExtractor.slice(binarizadaSemBordas.getAsBufferedImage(), 16, 20);
 
 		// gravando a saída
 		// deletando os arquivos do output
