@@ -13,7 +13,7 @@ import javax.media.jai.iterator.RandomIterFactory;
 public class Alfabeto {
 
 	// utilizado para gravar a matriz da letra
-	private LinkedHashMap<String, String> treino = new LinkedHashMap<String, String>();
+	private LinkedHashMap<String, ArrayList<String>> treino = new LinkedHashMap<String, ArrayList<String>>();
 
 	// utilizado para gravar a matriz do valor da letra
 	private LinkedHashMap<String, String> alfabeto = new LinkedHashMap<String, String>();
@@ -182,6 +182,9 @@ public class Alfabeto {
 
 			}
 		}
+		for (String s: alfabeto.keySet()) {
+			treino.put(s, new ArrayList<String>());
+		}
 		geraMatrizTreino();
 	}
 
@@ -245,7 +248,7 @@ public class Alfabeto {
 			// retira a extensao
 			nomeArquivo = fi.getName().split("\\.")[0];
 			if (!nomeArquivo.equals("")) {
-			    if(nomeArquivo.contains("_")) {
+				if (nomeArquivo.contains("_")) {
 				nomeArquivo = nomeArquivo.substring(0, nomeArquivo.indexOf("_"));
 			    }
 			    PlanarImage letra = JAI.create("fileload", TRAINING_FOLDER + fi.getName());
@@ -265,7 +268,7 @@ public class Alfabeto {
 	 * @param nomeLetra
 	 */
 	private void adicionarTreino(PlanarImage letra, String nomeLetra) {
-		int bloqueioBranco = 10;
+		int bloqueioBranco = 200;
 		int width = letra.getWidth();
 		int height = letra.getHeight();
 		RandomIter iterator = RandomIterFactory.create(letra, null);
@@ -282,9 +285,21 @@ public class Alfabeto {
 				}
 			}
 		}
+		imprimeLetraMatriz(letraMatriz);
 		addLetraTreino(letraMatriz, nomeLetra);
 	}
 
+	private void imprimeLetraMatriz(int[][] letraMatriz) {
+		int width = letraMatriz.length;
+		int height = letraMatriz[0].length;
+		for (int h = 0; h < height; h++) {
+			for (int w = 0; w < width; w++) {
+				System.out.print(letraMatriz[w][h]);
+			}
+			System.out.println();
+		}
+	}
+	
 	/**
 	 * <b>Adiciona linha da matriz separado por ';' ao hashmap treino</b>
 	 * 
@@ -304,7 +319,7 @@ public class Alfabeto {
 				sb.append(letraMatriz[w][h] + ";");
 			}
 		}
-		this.treino.put(nomeLetra, sb.toString());
+		this.treino.get(nomeLetra).add(sb.toString());
 	}
 
 	/**
@@ -328,22 +343,27 @@ public class Alfabeto {
 		return arr.get(index);
 	}
 
-	public String getLetraTeste(String letra) {
-		System.out.println("PASSAR COM PARAMETRO PARA REDE NEURAL (INTERROGATE): \n" + this.treino.get(letra));
-		return this.treino.get(letra);
-	}
+//	public String getLetraTeste(String letra) {
+//		System.out.println("PASSAR COM PARAMETRO PARA REDE NEURAL (INTERROGATE): \n" + this.treino.get(letra));
+//		
+//		return this.treino.get(letra);
+//	}
 
 	public String getTreino() {
 		String letr = null;
 		StringBuilder letras = new StringBuilder();
 		for (String letra : this.alfabeto.keySet()) {
-			letr = this.treino.get(letra) + this.alfabeto.get(letra) + "\n";
-			letras.append(letr);
+			for (String let: this.treino.get(letra)) {
+				letr = (let) + this.alfabeto.get(letra) + "\n";
+				letras.append(letr);
+			}
+//			letr = this.treino.get(letra) + this.alfabeto.get(letra) + "\n";
+//			letras.append(letr);
 		}
 		return letras.substring(0, letras.length() - 1);// letras.toString();
 	}
-
-	public static void main(String[] args) {
-		new Alfabeto().getLetraTeste("a");
-	}
+//
+//	public static void main(String[] args) {
+//		new Alfabeto().getLetraTeste("a");
+//	}
 }

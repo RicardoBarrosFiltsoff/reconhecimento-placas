@@ -63,7 +63,7 @@ public class JooneOCR implements NeuralNetListener, Serializable {
 
 		// set the monitor parameters
 		monitor.setLearningRate(0.8);
-		monitor.setMomentum(0.3);
+		monitor.setMomentum(0.2);
 		monitor.setTrainingPatterns(qtdTrainingPatterns); // qtd linhas
 															// inputStream
 		monitor.setTotCicles(ciclesTraining);
